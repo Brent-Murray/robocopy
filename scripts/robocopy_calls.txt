@@ -1,1 +1,1 @@
-robocopy //FRST-IRSStor/Root/ByUser/<LastnameFirstname> <drive:/LastnameFirstname> /XA:SH /E /MT /ZB
+robocopy <drive:/LastnameFirstname> <drive:/LastnameFirstname> /XA:SH /E /MT /ZB #//FRST-IRSStor/Root/ByUser/
