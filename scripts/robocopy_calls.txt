@@ -1,1 +1,3 @@
 robocopy <drive:/LastnameFirstname> <drive:/LastnameFirstname> /XA:SH /E /MT /ZB #//FRST-IRSStor/Root/ByUser/
+
+attrib +s -h <Path>

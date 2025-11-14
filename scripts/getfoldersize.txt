@@ -1,0 +1,9 @@
+Get-ChildItem "\\frst-irss2\ByUser" -Directory | ForEach-Object {
+    $line = (robocopy $_.FullName NULL /L /S /NFL /NDL /NJH /BYTES /NC /NS /NP | Select-String "Bytes :").ToString()
+    $bytes = [double](([regex]::Matches($line, '\d+(\.\d+)?') | Select-Object -First 1).Value)
+    $sizeGB = [math]::Round($bytes / 1GB, 2)
+    [PSCustomObject]@{
+        Folder = $_.Name
+        SizeGB = $sizeGB
+    }
+} | Format-Table -AutoSize

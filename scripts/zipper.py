@@ -1,5 +1,6 @@
 import os
 import zipfile
+import shutil
 import sys
 
 try:
@@ -7,28 +8,28 @@ try:
 except ModuleNotFoundError:
     # If tqdm is not installed, install it
     print("Installing tqdm...")
-    os.system("pip install tqdm")
+    os.system(" python -m pip install tqdm")
     from tqdm import tqdm  # Now import tqdm
 
 def zip_folders_in_directory(directory_path=None):
-    try:
-        # If no directory_path is provided, use the directory where this script is located
-        if directory_path is None:
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            directory_path = script_dir
+    # If no directory_path is provided, use the directory where this script is located
+    if directory_path is None:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        directory_path = script_dir
 
-        # Validate if the provided path is a directory
-        if not os.path.isdir(directory_path):
-            raise ValueError("The provided path is not a directory.")
+    # Validate if the provided path is a directory
+    if not os.path.isdir(directory_path):
+        raise ValueError("The provided path is not a directory.")
 
-        # Get the list of folders in the specified directory
-        folders = [f for f in os.listdir(directory_path) if os.path.isdir(os.path.join(directory_path, f))]
+    # Get the list of folders in the specified directory
+    folders = [f for f in os.listdir(directory_path) if os.path.isdir(os.path.join(directory_path, f))]
 
-        # Calculate the total number of folders to zip
-        total_folders = len(folders)
+    # Calculate the total number of folders to zip
+    total_folders = len(folders)
 
-        # Loop through the folders and create zip files with tqdm for progress bar
-        for folder in tqdm(folders, desc="Zipping Folders", unit="folder"):
+    # Loop through the folders and create zip files with tqdm for progress bar
+    for folder in tqdm(folders, desc="Zipping Folders", unit="folder"):
+        try:
             zip_filename = os.path.join(directory_path, f"{folder}.zip")
             with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
                 folder_path = os.path.join(directory_path, folder)
@@ -43,10 +44,12 @@ def zip_folders_in_directory(directory_path=None):
                         arcname = os.path.relpath(dir_path, folder_path)
                         zipf.write(dir_path, arcname)
 
-        print("Folders and contents zipped successfully.")
+            # Delete the folder after successful zipping
+            shutil.rmtree(folder_path)
+        except Exception as e:
+            print(f"Error occured: {e}")
 
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
+    print("Folders and contents zipped and deleted successfully successfully.")
 
 if __name__ == "__main__":
     zip_folders_in_directory()
